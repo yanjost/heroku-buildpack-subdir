@@ -16,6 +16,11 @@ for BUILDPACK in $(cat $1/.buildpacks); do
   dir=$(mktemp -t buildpackXXXXX)
   rm -rf $dir
 
+  if [[ "$BUILDPACK" =~ "^.*heroku-buildpack-subdir.*" ]] ; then
+    echo "skipping this buildpack ($BUILDPACK) to prevent endless loop"
+    continue
+  fi
+
   subdir=""
   if [[ $BUILDPACK == *'='* ]]; then
     subdir=$(echo $BUILDPACK | cut -d"=" -f 1)
